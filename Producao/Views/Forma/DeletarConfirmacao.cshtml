@@ -1,0 +1,11 @@
+﻿@model Forma
+@{
+    ViewData["Title"] = "Apagar Forma";
+}
+
+<div class="text">
+    <h3>Realmente deseja apagar a forma (@Model.Nome)?</h3>
+</div>
+
+<a class="btn btn-primary btn-block" role="button" asp-controller="Forma" asp-action="Index">Cancelar exclusão</a>
+<a class="btn btn-danger btn-block" role="button" asp-controller="Forma" asp-action="Deletar" asp-route-id="@Model.Id">Confirmar exclusão</a>

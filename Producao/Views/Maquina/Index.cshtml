@@ -1,0 +1,65 @@
+﻿@model List<Maquina>
+
+@{
+    ViewData["Title"] = "Maquinas";
+}
+
+<div class="text-center">
+
+    <div class="d-grid gap-2 d-md-flex justify-content-md-start">
+        <a class="btn btn-primary" role="button" asp-controller="Maquina" asp-action="Criar">Adicionar Nova Maquina</a>
+    </div>
+    <br />
+
+    @if (TempData["MensagemSucesso"] != null)
+    {
+        <div class="alert alert-success" role="alert">
+            <button type="button" class="btn btn-danger btn-sm close-alert" arial-label="Close">X</button>
+            @TempData["MensagemSucesso"]
+        </div>
+    }
+
+    @if (TempData["MensagemErro"] != null)
+    {
+        <div class="alert alert-danger" role="alert">
+            <button type="button" class="btn btn-danger btn-sm close-alert" arial-label="Close">X</button>
+            @TempData["MensagemErro"]
+        </div>
+    }
+
+    <h1 class="display-4">Listagem de Máquinas</h1>
+
+    <table id="table-maquinas" class="display" style="width:100%">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Nome</th>
+                <th scope="col">Marca</th>
+                <th scope="col"></th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model != null && Model.Any())
+            {
+                foreach (Maquina maquina in Model)
+                {
+                    <tr>
+                        <th scope="row">@maquina.Id</th>
+                        <td>@maquina.Nome</td>
+                        <td>@maquina.Marca</td>
+                        <td>
+                            <div class="btn-group" role="group">
+                                <a role="button" class="btn btn-primary" asp-route-id="@maquina.Id" asp-controller="Maquina" asp-action="Editar">Editar</a>
+                                <a role="button" class="btn btn-danger" asp-route-id="@maquina.Id" asp-controller="Maquina" asp-action="DeletarConfirmacao">Apagar</a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr class="odd"><td valign="top" colspan="5">Nenhuma maquina encontrada</td></tr>
+            }
+        </tbody>
+    </table>
+</div>
