@@ -27,15 +27,39 @@
             }
         </select>
     </div>
-@*     @for (var i = 0; i < Model.Maquinas.Count; i++)
-    {
-        <li>
-            <input type="checkbox" asp-for="@Model.Maquinas[i].Selected" />
-            <label asp-for="@Model.Maquinas[i].Selected">@Model.Maquinas[i].Nome</label>
-            <input type="hidden" asp-for="@Model.Maquinas[i].Id" />
-            <input type="hidden" asp-for="@Model.Maquinas[i].Nome" />
-        </li>
-    } *@
+    <div>
+        <label for="Maquinas">Maquinas</label>
+        <table>
+            <thead>
+                <tr>
+                    <th>Selecionar</th>
+                    <th>Nome</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (int i = 0; i < Model.Maquinas.Count; i++)
+                {
+                    <tr>
+                        <td>
+                            <input asp-for="@Model.Maquinas[i].Selecionado" type="checkbox" />
+                            <input asp-for="@Model.Maquinas[i].Id" type="hidden" />
+                        </td>
+                        <td>@Model.Maquinas[i].Nome</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        @* @for (int i = 0; i < Model.Maquinas.Count; i++)
+        {
+            <tr>
+                <td>
+                    <input asp-for="@Model.Maquinas[i].Selecionado" type="checkbox" />
+                    <input asp-for="@Model.Maquinas[i].Id" type="hidden" />
+                </td>
+                <td>@Model.Maquinas[i].Nome</td>
+            </tr>
+        } *@
+    </div>
     <div class="form-group">
         <label for="pecasPorCiclo">Peças por Ciclo</label>
         <input type="number" asp-for="Forma.PecasPorCiclo" class="form-control" placeholder="Digite o número de peças por ciclo da forma">

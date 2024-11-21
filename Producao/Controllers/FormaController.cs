@@ -28,11 +28,18 @@ namespace Producao.Controllers
             var maquinas = new List<Maquina>();
             maquinas = _context.Maquinas.ToList();
 
+            var model = maquinas.Select(m => new MaquinaViewModel
+            {
+                Id = m.Id,
+                Nome = m.Nome,
+                Selecionado = false
+            }).ToList();
+
             var viewModel = new FormaProdutoViewModel
             {
                 Forma = new Forma(),
                 Produtos = produtos,
-                Maquinas = maquinas
+                Maquinas = model
             };
 
             return View(viewModel);
