@@ -1,0 +1,82 @@
+﻿@model ProducaoViewModel
+@{
+    ViewData["Title"] = "Criar Produção";
+}
+
+<div class="text-center">
+
+    <h1 class="display-4">Cadastrar Produção</h1>
+
+</div>
+
+<form asp-controller="ProcessoProducao" asp-action="Criar" method="post">
+
+    <div class="form-group">
+        <label for="data">Data</label>
+        <input type="date" asp-for="Data" class="form-control" placeholder="Digite a data da produção">
+        @Html.ValidationMessageFor(x => x.Data)
+    </div>
+    <div>
+        <label for="maquina">Máquina</label>
+        <select asp-for="MaquinaId" class="form-control">
+            <option value="">Selecione uma máquina</option>
+            @foreach (var maquina in Model.Maquinas)
+            {
+                <option value="@maquina.Id">@maquina.Nome</option>
+            }
+        </select>
+    </div>
+    <div>
+        <label for="forma">Forma</label>
+        <select asp-for="FormaId" class="form-control">
+            <option value="">Selecione uma forma</option>
+            @foreach (var forma in Model.Formas)
+            {
+                <option value="@forma.Id">@forma.Nome</option>
+            }
+        </select>
+    </div>
+    <div>
+        <label for="Produto">Produto</label>
+        <select asp-for="ProdutoId" class="form-control">
+            <option value="">Selecione um produto</option>
+            @foreach (var produto in Model.Produtos)
+            {
+                <option value="@produto.Id">@produto.Nome</option>
+            }
+        </select>
+    </div>
+    <div class="form-group">
+        <label for="ciclos">Ciclos</label>
+        <input type="number" asp-for="Ciclos" class="form-control" placeholder="Digite o número de ciclos">
+        @Html.ValidationMessageFor(x => x.Ciclos)
+    </div>
+    <div>
+        <label for="MateriasPrimas">Matérias-Primas</label>
+        <table>
+            <thead>
+                <tr>
+                    <th>Selecionar</th>
+                    <th>Nome</th>
+                    <th>Quantidade</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (int i = 0; i < Model.MateriasPrimas.Count; i++)
+                {
+                    <tr>
+                        <td>
+                            <input asp-for="@Model.MateriasPrimasCheckbox[i].Selecionado" type="checkbox" />
+                            <input asp-for="@Model.MateriasPrimasCheckbox[i].Id" type="hidden" />
+                        </td>
+                        <td>@Model.MateriasPrimas[i].Nome</td>
+                        <td><input type="number" asp-for="@Model.MateriasPrimasCheckbox[i].Quantidade" class="form-control" /></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    
+    <button type="submit" class="btn btn-primary btn-block">Adicionar</button>
+    <a class="btn btn-secondary btn-block" asp-controller="ProcessoProducao" asp-action="Index" role="button">Voltar</a>
+</form>

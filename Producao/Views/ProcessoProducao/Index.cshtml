@@ -1,0 +1,77 @@
+﻿@model List<ProcessoProducao>
+
+@{
+    ViewData["Title"] = "Produções";
+}
+
+<div class="text-center">
+
+    <div class="d-grid gap-2 d-md-flex justify-content-md-start">
+        <a class="btn btn-primary" role="button" asp-controller="ProcessoProducao" asp-action="Criar">Adicionar Nova Produção</a>
+    </div>
+    <br />
+
+    @if (TempData["MensagemSucesso"] != null)
+    {
+        <div class="alert alert-success" role="alert">
+            <button type="button" class="btn btn-danger btn-sm close-alert" arial-label="Close">X</button>
+            @TempData["MensagemSucesso"]
+        </div>
+    }
+
+    @if (TempData["MensagemErro"] != null)
+    {
+        <div class="alert alert-danger" role="alert">
+            <button type="button" class="btn btn-danger btn-sm close-alert" arial-label="Close">X</button>
+            @TempData["MensagemErro"]
+        </div>
+    }
+
+    <h1 class="display-4">Listagem de Produções</h1>
+
+    <table id="table-producoes" class="display" style="width:100%">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Data</th>
+                <th scope="col">Maquina</th>
+                <th scope="col">Forma</th>
+                <th scope="col">Produto</th>
+                <th scope="col">Ciclos</th>
+                <th scope="col">Quantidade Produzida</th>
+                <th scope="col">Custo Unitário</th>
+                <th scope="col">Custo Total</th>
+                <th scope="col"></th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model != null && Model.Any())
+            {
+                foreach (ProcessoProducao producao in Model)
+                {
+                    <tr>
+                        <th scope="row">@producao.Id</th>
+                        <td>@producao.Data</td>
+                        <td>@producao.Maquina</td>
+                        <td>@producao.Forma</td>
+                        <td>@producao.Produto</td>
+                        <td>@producao.Ciclos</td>
+                        <td>@producao.QuantidadeProduzida</td>
+                        <td>@producao.CustoUnitario</td>
+                        <td>@producao.CustoTotal</td>
+                        <td>
+                            <div class="btn-group" role="group">
+                                <a role="button" class="btn btn-primary" asp-route-id="@producao.Id" asp-controller="ProcessoProducao" asp-action="Editar">Editar</a>
+                                <a role="button" class="btn btn-danger" asp-route-id="@producao.Id" asp-controller="ProcessoProducao" asp-action="DeletarConfirmacao">Apagar</a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr class="odd"><td valign="top" colspan="5">Nenhuma produção encontrada</td></tr>
+            }
+        </tbody>
+    </table>
+</div>

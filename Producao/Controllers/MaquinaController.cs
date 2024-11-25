@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Producao.Data;
 using Producao.Models;
 
@@ -15,7 +16,7 @@ namespace Producao.Controllers
 
         public IActionResult Index()
         {
-            List<Maquina> maquinas = _context.Maquinas.ToList();
+            List<Maquina> maquinas = _context.Maquinas.Include(f => f.Formas).ToList();
             return View(maquinas);  
         }
 
@@ -32,13 +33,26 @@ namespace Producao.Controllers
 
         public IActionResult DeletarConfirmacao(int id)
         {
-            Maquina maquina = _context.Maquinas.FirstOrDefault(m => m.Id == id);
+            Maquina maquina = _context.Maquinas.Include(p => p.Formas).FirstOrDefault(m => m.Id == id);
+            if (maquina.Formas.Count > 0)
+            {
+                TempData["MensagemErro"] = "Existem formas com essa máquina!";
+            }
             return View(maquina);
         }
 
         public IActionResult Deletar(int id)
         {
-            Maquina maquina = _context.Maquinas.FirstOrDefault(m => m.Id == id);
+            Maquina maquina = _context.Maquinas.Include(p => p.Formas).FirstOrDefault(m => m.Id == id);
+
+            if (maquina.Formas.Count > 0)
+            {
+                foreach (var forma in maquina.Formas)
+                {
+                    forma.Maquinas.Remove(maquina);
+                }
+            }
+
             _context.Maquinas.Remove(maquina);
             _context.SaveChanges();
             TempData["MensagemSucesso"] = "Máquina apagada com sucesso";

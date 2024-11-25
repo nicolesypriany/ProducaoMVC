@@ -1,13 +1,13 @@
-﻿@model List<Maquina>
+﻿@model List<MateriaPrima>
 
 @{
-    ViewData["Title"] = "Maquinas";
+    ViewData["Title"] = "Matérias-Primas";
 }
 
 <div class="text-center">
 
     <div class="d-grid gap-2 d-md-flex justify-content-md-start">
-        <a class="btn btn-primary" role="button" asp-controller="Maquina" asp-action="Criar">Adicionar Nova Maquina</a>
+        <a class="btn btn-primary" role="button" asp-controller="MateriaPrima" asp-action="Criar">Adicionar Nova Matéria-Prima</a>
     </div>
     <br />
 
@@ -27,37 +27,34 @@
         </div>
     }
 
-    <h1 class="display-4">Listagem de Máquinas</h1>
+    <h1 class="display-4">Listagem de Matérias-Primas</h1>
 
-    <table id="table-maquinas" class="display" style="width:100%">
+    <table id="table-materiasPrimas" class="display" style="width:100%">
         <thead>
             <tr>
                 <th scope="col">#</th>
                 <th scope="col">Nome</th>
-                <th scope="col">Marca</th>
-                <th scope="col">Formas</th>
+                <th scope="col">Fornecedor</th>
+                <th scope="col">Unidade</th>
+                <th scope="col">Preço</th>
                 <th scope="col"></th>
             </tr>
         </thead>
         <tbody>
             @if (Model != null && Model.Any())
             {
-                foreach (Maquina maquina in Model)
+                foreach (MateriaPrima materiaPrima in Model)
                 {
                     <tr>
-                        <th scope="row">@maquina.Id</th>
-                        <td>@maquina.Nome</td>
-                        <td>@maquina.Marca</td>
-                        <td>
-                            @foreach (Forma forma in maquina.Formas)
-                            {
-                                @forma.Nome<br />
-                            }
-                        </td>
+                        <th scope="row">@materiaPrima.Id</th>
+                        <td>@materiaPrima.Nome</td>
+                        <td>@materiaPrima.Fornecedor</td>
+                        <td>@materiaPrima.Unidade</td>
+                        <td>@materiaPrima.Preco</td>
                         <td>
                             <div class="btn-group" role="group">
-                                <a role="button" class="btn btn-primary" asp-route-id="@maquina.Id" asp-controller="Maquina" asp-action="Editar">Editar</a>
-                                <a role="button" class="btn btn-danger" asp-route-id="@maquina.Id" asp-controller="Maquina" asp-action="DeletarConfirmacao">Apagar</a>
+                            <a role="button" class="btn btn-primary" asp-route-id="@materiaPrima.Id" asp-controller="MateriaPrima" asp-action="Editar">Editar</a>
+                            <a role="button" class="btn btn-danger" asp-route-id="@materiaPrima.Id" asp-controller="MateriaPrima" asp-action="DeletarConfirmacao">Apagar</a>
                             </div>
                         </td>
                     </tr>
@@ -65,7 +62,7 @@
             }
             else
             {
-                <tr class="odd"><td valign="top" colspan="5">Nenhuma maquina encontrada</td></tr>
+                <tr class="odd"><td valign="top" colspan="5">Nenhuma matéria-prima encontrada</td></tr>
             }
         </tbody>
     </table>
