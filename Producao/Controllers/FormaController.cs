@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.SqlServer.Server;
 using Producao.Data;
 using Producao.Models;
 
@@ -22,11 +23,9 @@ namespace Producao.Controllers
 
         public IActionResult Criar()
         {
-            var produtos = new List<Produto>();
-            produtos = _context.Produtos.ToList();
+            var produtos = _context.Produtos.ToList();
 
-            var maquinas = new List<Maquina>();
-            maquinas = _context.Maquinas.ToList();
+            var maquinas = _context.Maquinas.ToList();
 
             var maquinasCheckbox = new List<MaquinaCheckboxViewModel>();
 
@@ -53,13 +52,43 @@ namespace Producao.Controllers
 
         public IActionResult Editar(int id)
         {
-            Forma forma = _context.Formas.FirstOrDefault(m => m.Id == id);
-            var produtos = new List<Produto>();
-            produtos = _context.Produtos.ToList();
+            var produtos = _context.Produtos.ToList();
+
+            var maquinas = _context.Maquinas.ToList();
+
+            Forma forma = _context.Formas.Include(f => f.Maquinas).FirstOrDefault(m => m.Id == id);
+            var maquinasDaForma = forma.Maquinas.ToList();
+
+            var maquinasCheckbox = new List<MaquinaCheckboxViewModel>();
+
+            foreach (var maquina in maquinas)
+            {
+                var maquinaCheck = new MaquinaCheckboxViewModel
+                {
+                    Id = maquina.Id,
+                    Nome = maquina.Nome,
+                    Selecionado = false
+                };
+                maquinasCheckbox.Add(maquinaCheck);
+            }
+
+            for (int i = 0; i < maquinasCheckbox.Count; i++)
+            {
+                Maquina maquina = _context.Maquinas.FirstOrDefault(m => m.Id == maquinasCheckbox[i].Id);
+                if (maquinasDaForma.Contains(maquina))
+                {
+                    maquinasCheckbox[i].Selecionado = true;
+                }
+            }
 
             var viewModel = new FormaProdutoViewModel
             {
-                //Forma = forma,
+                Forma = forma,
+                Nome = forma.Nome,
+                ProdutoId = forma.ProdutoId,
+                PecasPorCiclo = forma.PecasPorCiclo,
+                Maquinas = maquinas,
+                MaquinasCheckbox = maquinasCheckbox,
                 Produtos = produtos
             };
             
@@ -120,15 +149,25 @@ namespace Producao.Controllers
         }
 
         [HttpPost]
-        public IActionResult Editar(Forma forma)
+        public IActionResult Editar(FormaProdutoViewModel formaVm)
         {
             try
             {
-                Forma formaDb = _context.Formas.FirstOrDefault(m => m.Id == forma.Id);
+                List<Maquina> maquinasSelecionadas = new List<Maquina>();
+                foreach (var item in formaVm.MaquinasCheckbox)
+                {
+                    if (item.Selecionado)
+                    {
+                        maquinasSelecionadas.Add(_context.Maquinas.FirstOrDefault(m => m.Id == item.Id));
+                    }
+                }
 
-                formaDb.Nome = forma.Nome;
-                formaDb.ProdutoId = forma.ProdutoId;
-                formaDb.PecasPorCiclo = forma.PecasPorCiclo;
+                Forma formaDb = _context.Formas.Include(f => f.Maquinas).FirstOrDefault(m => m.Id == formaVm.Forma.Id);
+
+                formaDb.Nome = formaVm.Nome;
+                formaDb.ProdutoId = formaVm.ProdutoId;
+                formaDb.PecasPorCiclo = formaVm.PecasPorCiclo;
+                formaDb.Maquinas = maquinasSelecionadas;
 
                 _context.Formas.Update(formaDb);
                 _context.SaveChanges();

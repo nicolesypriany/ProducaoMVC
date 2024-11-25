@@ -1,4 +1,4 @@
-﻿@* @model FormaProdutoViewModel
+﻿@model FormaProdutoViewModel
 @{
     ViewData["Title"] = "Editar Forma";
 }
@@ -13,12 +13,12 @@
     <input type="hidden" asp-for="Forma.Id" />
     <div class="form-group">
         <label for="nome">Nome</label>
-        <input type="text" asp-for="Forma.Nome" class="form-control" placeholder="Digite o nome da forma">
-        @Html.ValidationMessageFor(x => x.Forma.Nome)
+        <input type="text" asp-for="Nome" class="form-control" placeholder="Digite o nome da forma">
+        @Html.ValidationMessageFor(x => x.Nome)
     </div>
     <div>
         <label for="Produto">Produto</label>
-        <select asp-for="Forma.ProdutoId" class="form-control">
+        <select asp-for="ProdutoId" class="form-control">
             <option value="">Selecione um produto</option>
             @foreach (var produto in Model.Produtos)
             {
@@ -26,15 +26,35 @@
             }
         </select>
     </div>
+    <div>
+        <label for="Maquinas">Maquinas</label>
+        <table>
+            <thead>
+                <tr>
+                    <th>Selecionar</th>
+                    <th>Nome</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (int i = 0; i < Model.Maquinas.Count; i++)
+                {
+                    <tr>
+                        <td>
+                            <input asp-for="@Model.MaquinasCheckbox[i].Selecionado" type="checkbox" />
+                            <input asp-for="@Model.MaquinasCheckbox[i].Id" type="hidden" />
+                        </td>
+                        <td>@Model.Maquinas[i].Nome</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
     <div class="form-group">
         <label for="pecasPorCiclo">Peças por Ciclo</label>
-        <input type="number" asp-for="Forma.PecasPorCiclo" class="form-control" placeholder="Digite o número de peças por ciclo da forma">
-        @Html.ValidationMessageFor(x => x.Forma.PecasPorCiclo)
+        <input type="number" asp-for="PecasPorCiclo" class="form-control" placeholder="Digite o número de peças por ciclo da forma">
+        @Html.ValidationMessageFor(x => x.PecasPorCiclo)
     </div>
-
-
 
     <button type="submit" class="btn btn-primary btn-block">Editar</button>
     <a class="btn btn-secondary btn-block" asp-controller="Forma" asp-action="Index" role="button">Voltar</a>
 </form>
- *@

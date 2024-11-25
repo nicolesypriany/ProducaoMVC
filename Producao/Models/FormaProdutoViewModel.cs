@@ -2,7 +2,7 @@
 {
     public class FormaProdutoViewModel
     {
-        //public Forma Forma { get; set; }
+        public Forma Forma { get; set; }
         public string Nome { get; set; }
         public int ProdutoId { get; set; }
         public int PecasPorCiclo { get; set; }
