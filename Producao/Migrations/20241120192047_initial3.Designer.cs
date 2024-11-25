@@ -12,8 +12,8 @@ using Producao.Data;
 namespace Producao.Migrations
 {
     [DbContext(typeof(ProducaoContext))]
-    [Migration("20241118185422_InitialDb")]
-    partial class InitialDb
+    [Migration("20241120192047_initial3")]
+    partial class initial3
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -140,7 +140,7 @@ namespace Producao.Migrations
                     b.Property<int>("MaquinaId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("ProdutoId")
+                    b.Property<int>("ProdutoId")
                         .HasColumnType("int");
 
                     b.Property<double>("QuantidadeProduzida")
@@ -208,13 +208,13 @@ namespace Producao.Migrations
                     b.HasOne("Producao.Models.Forma", null)
                         .WithMany()
                         .HasForeignKey("FormasId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("Producao.Models.Maquina", null)
                         .WithMany()
                         .HasForeignKey("MaquinasId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
                 });
 
@@ -223,7 +223,7 @@ namespace Producao.Migrations
                     b.HasOne("Producao.Models.Produto", "Produto")
                         .WithMany("Formas")
                         .HasForeignKey("ProdutoId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Produto");
@@ -234,22 +234,26 @@ namespace Producao.Migrations
                     b.HasOne("Producao.Models.Forma", "Forma")
                         .WithMany("Producoes")
                         .HasForeignKey("FormaId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("Producao.Models.Maquina", "Maquina")
                         .WithMany("Producoes")
                         .HasForeignKey("MaquinaId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Producao.Models.Produto", null)
+                    b.HasOne("Producao.Models.Produto", "Produto")
                         .WithMany("Producoes")
-                        .HasForeignKey("ProdutoId");
+                        .HasForeignKey("ProdutoId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.Navigation("Forma");
 
                     b.Navigation("Maquina");
+
+                    b.Navigation("Produto");
                 });
 
             modelBuilder.Entity("Producao.Models.ProducaoMateriaPrima", b =>
@@ -257,13 +261,13 @@ namespace Producao.Migrations
                     b.HasOne("Producao.Models.MateriaPrima", "MateriaPrima")
                         .WithMany("ProducaoMateriasPrimas")
                         .HasForeignKey("MateriaPrimaId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("Producao.Models.ProcessoProducao", "ProcessoProducao")
                         .WithMany("ProducaoMateriasPrimas")
                         .HasForeignKey("ProducaoId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("MateriaPrima");

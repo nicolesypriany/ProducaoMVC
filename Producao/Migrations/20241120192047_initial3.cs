@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Producao.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialDb : Migration
+    public partial class initial3 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -75,7 +75,7 @@ namespace Producao.Migrations
                         column: x => x.ProdutoId,
                         principalTable: "Produtos",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -93,13 +93,13 @@ namespace Producao.Migrations
                         column: x => x.FormasId,
                         principalTable: "Formas",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_FormaMaquina_Maquinas_MaquinasId",
                         column: x => x.MaquinasId,
                         principalTable: "Maquinas",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -111,11 +111,11 @@ namespace Producao.Migrations
                     Data = table.Column<DateTime>(type: "datetime2", nullable: false),
                     MaquinaId = table.Column<int>(type: "int", nullable: false),
                     FormaId = table.Column<int>(type: "int", nullable: false),
+                    ProdutoId = table.Column<int>(type: "int", nullable: false),
                     Ciclos = table.Column<int>(type: "int", nullable: false),
                     QuantidadeProduzida = table.Column<double>(type: "float", nullable: false),
                     CustoUnitario = table.Column<double>(type: "float", nullable: false),
-                    CustoTotal = table.Column<double>(type: "float", nullable: false),
-                    ProdutoId = table.Column<int>(type: "int", nullable: true)
+                    CustoTotal = table.Column<double>(type: "float", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -125,18 +125,19 @@ namespace Producao.Migrations
                         column: x => x.FormaId,
                         principalTable: "Formas",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Producoes_Maquinas_MaquinaId",
                         column: x => x.MaquinaId,
                         principalTable: "Maquinas",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Producoes_Produtos_ProdutoId",
                         column: x => x.ProdutoId,
                         principalTable: "Produtos",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -155,13 +156,13 @@ namespace Producao.Migrations
                         column: x => x.MateriaPrimaId,
                         principalTable: "MateriasPrimas",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_ProducoesMateriasPrimas_Producoes_ProducaoId",
                         column: x => x.ProducaoId,
                         principalTable: "Producoes",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateIndex(

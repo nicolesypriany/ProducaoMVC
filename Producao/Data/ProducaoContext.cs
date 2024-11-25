@@ -25,7 +25,13 @@ namespace Producao.Data
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {           
+        {
+
+            foreach (var relationship in modelBuilder.Model.GetEntityTypes().SelectMany(e => e.GetForeignKeys()))
+            {
+                relationship.DeleteBehavior = DeleteBehavior.Restrict;
+            }
+
             modelBuilder.Entity<Maquina>()
                 .HasMany(m => m.Formas)
                 .WithMany(f => f.Maquinas);

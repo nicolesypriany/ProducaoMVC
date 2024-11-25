@@ -1,0 +1,25 @@
+﻿@model List<MaquinaCheckboxViewModel>
+
+<form asp-action="Index" method="post">
+    <table>
+        <thead>
+            <tr>
+                <th>Selecionar</th>
+                <th>Nome</th>
+            </tr>
+        </thead>
+        <tbody>
+            @for (int i = 0; i < Model.Count; i++)
+            {
+                <tr>
+                    <td>
+                        <input asp-for="@Model[i].Selecionado" type="checkbox" />
+                        <input asp-for="@Model[i].Id" type="hidden" />
+                    </td>
+                    <td>@Model[i].Nome</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <button type="submit">Enviar</button>
+</form>

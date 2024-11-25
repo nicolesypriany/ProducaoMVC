@@ -34,7 +34,7 @@ namespace Producao.Migrations
 
                     b.HasIndex("MaquinasId");
 
-                    b.ToTable("FormaMaquina", (string)null);
+                    b.ToTable("FormaMaquina");
                 });
 
             modelBuilder.Entity("Producao.Models.Forma", b =>
@@ -59,7 +59,7 @@ namespace Producao.Migrations
 
                     b.HasIndex("ProdutoId");
 
-                    b.ToTable("Formas", (string)null);
+                    b.ToTable("Formas");
                 });
 
             modelBuilder.Entity("Producao.Models.Maquina", b =>
@@ -80,7 +80,7 @@ namespace Producao.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Maquinas", (string)null);
+                    b.ToTable("Maquinas");
                 });
 
             modelBuilder.Entity("Producao.Models.MateriaPrima", b =>
@@ -108,7 +108,7 @@ namespace Producao.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("MateriasPrimas", (string)null);
+                    b.ToTable("MateriasPrimas");
                 });
 
             modelBuilder.Entity("Producao.Models.ProcessoProducao", b =>
@@ -137,7 +137,7 @@ namespace Producao.Migrations
                     b.Property<int>("MaquinaId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("ProdutoId")
+                    b.Property<int>("ProdutoId")
                         .HasColumnType("int");
 
                     b.Property<double>("QuantidadeProduzida")
@@ -151,7 +151,7 @@ namespace Producao.Migrations
 
                     b.HasIndex("ProdutoId");
 
-                    b.ToTable("Producoes", (string)null);
+                    b.ToTable("Producoes");
                 });
 
             modelBuilder.Entity("Producao.Models.ProducaoMateriaPrima", b =>
@@ -169,7 +169,7 @@ namespace Producao.Migrations
 
                     b.HasIndex("MateriaPrimaId");
 
-                    b.ToTable("ProducoesMateriasPrimas", (string)null);
+                    b.ToTable("ProducoesMateriasPrimas");
                 });
 
             modelBuilder.Entity("Producao.Models.Produto", b =>
@@ -197,7 +197,7 @@ namespace Producao.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Produtos", (string)null);
+                    b.ToTable("Produtos");
                 });
 
             modelBuilder.Entity("FormaMaquina", b =>
@@ -205,13 +205,13 @@ namespace Producao.Migrations
                     b.HasOne("Producao.Models.Forma", null)
                         .WithMany()
                         .HasForeignKey("FormasId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("Producao.Models.Maquina", null)
                         .WithMany()
                         .HasForeignKey("MaquinasId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
                 });
 
@@ -220,7 +220,7 @@ namespace Producao.Migrations
                     b.HasOne("Producao.Models.Produto", "Produto")
                         .WithMany("Formas")
                         .HasForeignKey("ProdutoId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Produto");
@@ -231,22 +231,26 @@ namespace Producao.Migrations
                     b.HasOne("Producao.Models.Forma", "Forma")
                         .WithMany("Producoes")
                         .HasForeignKey("FormaId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("Producao.Models.Maquina", "Maquina")
                         .WithMany("Producoes")
                         .HasForeignKey("MaquinaId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Producao.Models.Produto", null)
+                    b.HasOne("Producao.Models.Produto", "Produto")
                         .WithMany("Producoes")
-                        .HasForeignKey("ProdutoId");
+                        .HasForeignKey("ProdutoId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.Navigation("Forma");
 
                     b.Navigation("Maquina");
+
+                    b.Navigation("Produto");
                 });
 
             modelBuilder.Entity("Producao.Models.ProducaoMateriaPrima", b =>
@@ -254,13 +258,13 @@ namespace Producao.Migrations
                     b.HasOne("Producao.Models.MateriaPrima", "MateriaPrima")
                         .WithMany("ProducaoMateriasPrimas")
                         .HasForeignKey("MateriaPrimaId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("Producao.Models.ProcessoProducao", "ProcessoProducao")
                         .WithMany("ProducaoMateriasPrimas")
                         .HasForeignKey("ProducaoId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("MateriaPrima");

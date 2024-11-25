@@ -16,7 +16,7 @@ namespace Producao.Controllers
 
         public IActionResult Index()
         {
-            List<Forma> formas = _context.Formas.Include(f => f.Produto).ToList();
+            List<Forma> formas = _context.Formas.Include(f => f.Produto).Include(f => f.Maquinas).ToList();
             return View(formas);
         }
 
@@ -28,13 +28,26 @@ namespace Producao.Controllers
             var maquinas = new List<Maquina>();
             maquinas = _context.Maquinas.ToList();
 
+            var maquinasCheckbox = new List<MaquinaCheckboxViewModel>();
+
+            foreach (var maquina in maquinas)
+            {
+                var maquinaCheck = new MaquinaCheckboxViewModel
+                {
+                    Id = maquina.Id,
+                    Nome = maquina.Nome,
+                    Selecionado = false
+                };
+                maquinasCheckbox.Add(maquinaCheck);
+            }
+
             var viewModel = new FormaProdutoViewModel
             {
-                Forma = new Forma(),
                 Produtos = produtos,
-                Maquinas = maquinas
+                Maquinas = maquinas,
+                MaquinasCheckbox = maquinasCheckbox,
             };
-
+ 
             return View(viewModel);
         }
 
@@ -46,7 +59,7 @@ namespace Producao.Controllers
 
             var viewModel = new FormaProdutoViewModel
             {
-                Forma = forma,
+                //Forma = forma,
                 Produtos = produtos
             };
             
@@ -68,11 +81,32 @@ namespace Producao.Controllers
             return RedirectToAction("Index");
         }
 
+        public Forma CriarFormaPorModelo(FormaProdutoViewModel formaVm)
+        {
+            List<Maquina> maquinasSelecionadas = new List<Maquina>();
+            foreach (var item in formaVm.MaquinasCheckbox)
+            {
+                if (item.Selecionado)
+                {
+                    maquinasSelecionadas.Add(_context.Maquinas.FirstOrDefault(m => m.Id == item.Id));
+                }
+            }
+
+            var forma = new Forma();
+            forma.Nome = formaVm.Nome;
+            forma.ProdutoId = formaVm.ProdutoId;
+            forma.PecasPorCiclo = formaVm.PecasPorCiclo;
+            forma.Maquinas = maquinasSelecionadas;
+
+            return (forma);
+        }
+
         [HttpPost]
-        public IActionResult Criar(Forma forma)
+        public IActionResult Criar(FormaProdutoViewModel formaVm)
         {
             try
             {
+                var forma = CriarFormaPorModelo(formaVm);
                 _context.Formas.Add(forma);
                 _context.SaveChanges();
                 TempData["MensagemSucesso"] = "Forma cadastrada com sucesso";
