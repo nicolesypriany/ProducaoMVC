@@ -16,8 +16,15 @@ namespace Producao.Controllers
 
         public IActionResult Index()
         {
-            List<ProcessoProducao> producoes = _context.Producoes.ToList();
-            return View(producoes);  
+            List<ProcessoProducao> producoes = _context.Producoes
+                .Include(p => p.Maquina)
+                .Include(p => p.Forma)
+                .Include(p => p.Produto)
+                .Include(p => p.ProducaoMateriasPrimas)
+                .ThenInclude(p => p.MateriaPrima)
+                .ToList();
+
+            return View(producoes);
         }
 
         public IActionResult Criar()
@@ -94,6 +101,7 @@ namespace Producao.Controllers
             producao.FormaId = producaoVm.FormaId;
             producao.ProdutoId = producaoVm.ProdutoId;
             producao.Ciclos = producaoVm.Ciclos;
+            producao.ProducaoMateriasPrimas = new List<ProducaoMateriaPrima>();
 
             for (int i = 0; i < materiasSelecionadas.Count; i++)
             {
@@ -101,6 +109,7 @@ namespace Producao.Controllers
                 producaoMateriaPrima.ProducaoId = producao.Id;
                 producaoMateriaPrima.MateriaPrimaId = materiasSelecionadas[i].Id;
                 producaoMateriaPrima.Quantidade = producaoVm.MateriasPrimasCheckbox[i].Quantidade;
+                producao.ProducaoMateriasPrimas.Add(producaoMateriaPrima);
             };
 
             return (producao);
