@@ -2,6 +2,7 @@
 {
     public class ProducaoViewModel
     {
+        public ProcessoProducao Producao { get; set; }
         public DateTime Data { get; set; }
         public List<Maquina> Maquinas { get; set; }
         public List<Forma> Formas { get; set; }

@@ -1,17 +1,17 @@
 ﻿@model ProducaoViewModel
 @{
-    ViewData["Title"] = "Criar Produção";
+    ViewData["Title"] = "Editar Produção";
 }
 
 <div class="text-center">
 
-    <h1 class="display-4">Cadastrar Produção</h1>
+    <h1 class="display-4">Editar Produção</h1>
 
 </div>
 
-<form asp-controller="ProcessoProducao" asp-action="Criar" method="post">
-
-    <div class="form-group">
+<form asp-controller="MateriaPrima" asp-action="Editar" method="post">
+    <input type="hidden" asp-for="@Model.Producao.Id" />
+    <<div class="form-group">
         <label for="data">Data</label>
         <input type="date" asp-for="Data" class="form-control" placeholder="Digite a data da produção">
         @Html.ValidationMessageFor(x => x.Data)
@@ -76,7 +76,8 @@
             </tbody>
         </table>
     </div>
-    
-    <button type="submit" class="btn btn-primary btn-block">Adicionar</button>
-    <a class="btn btn-secondary btn-block" asp-controller="ProcessoProducao" asp-action="Index" role="button">Voltar</a>
+
+
+    <button type="submit" class="btn btn-primary btn-block">Editar</button>
+    <a class="btn btn-secondary btn-block" asp-controller="MateriaPrima" asp-action="Index" role="button">Voltar</a>
 </form>

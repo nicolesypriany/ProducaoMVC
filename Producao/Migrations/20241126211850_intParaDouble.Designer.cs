@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Producao.Data;
 
@@ -11,9 +12,11 @@ using Producao.Data;
 namespace Producao.Migrations
 {
     [DbContext(typeof(ProducaoContext))]
-    partial class ProducaoContextModelSnapshot : ModelSnapshot
+    [Migration("20241126211850_intParaDouble")]
+    partial class intParaDouble
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

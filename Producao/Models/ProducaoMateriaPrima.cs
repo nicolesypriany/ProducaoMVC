@@ -8,6 +8,6 @@
         public int MateriaPrimaId { get; set; }
         public MateriaPrima MateriaPrima { get; set; }
 
-        public int Quantidade { get; set; }
+        public double Quantidade { get; set; }
     }
 }
