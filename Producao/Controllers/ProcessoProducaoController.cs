@@ -211,6 +211,19 @@ namespace Producao.Controllers
                     iDMateriasAntigas.Add(item.MateriaPrimaId);
                 }
 
+                //verifica se a materia prima ja esta na lista e atribui a nova quantidade
+                foreach (var item in iDMateriasSelecionadas)
+                {
+                    for(int i = 0; i < producoesMateriasPrimas.Count; i++)
+                    {
+                        if (producoesMateriasPrimas[i].MateriaPrimaId == item)
+                        {
+                            var item1 = producaoVm.MateriasPrimasCheckbox.FirstOrDefault(p => p.Id == item);
+                            producoesMateriasPrimas[i].Quantidade = item1.Quantidade;
+                        }
+                    }
+                }
+
                 List<int> idMateriasNovas = new List<int>();
                 foreach (var id in iDMateriasSelecionadas)
                 {
@@ -221,7 +234,7 @@ namespace Producao.Controllers
                 }
 
                 List<ProducaoMateriaPrima> producoesnovas = new List<ProducaoMateriaPrima>();
-
+                //adiciona as novas materias primas selecionadas
                 for (int i = 0; i < idMateriasNovas.Count; i++)
                 {
                     foreach (var item in producaoVm.MateriasPrimasCheckbox)
@@ -242,6 +255,22 @@ namespace Producao.Controllers
                 {
                     producaoDb.ProducaoMateriasPrimas.Add(item);
                 }
+
+                List<int> idMateriasADeletar = new List<int>();
+                foreach(var item in iDMateriasAntigas)
+                {
+                    if (!iDMateriasSelecionadas.Contains(item))
+                    {
+                        idMateriasADeletar.Add(item);
+                    }
+                }
+
+                foreach (var item in idMateriasADeletar)
+                {
+                    var pm = producoesMateriasPrimas.FirstOrDefault(p => p.MateriaPrimaId == item);
+                    _context.ProducoesMateriasPrimas.Remove(pm);
+                }
+
 
                 producaoDb.Data = producaoVm.Data;
                 producaoDb.MaquinaId = producaoVm.MaquinaId;
