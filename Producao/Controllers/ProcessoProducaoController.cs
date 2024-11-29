@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.SqlServer.Server;
 using Producao.Data;
 using Producao.Models;
 
@@ -86,11 +87,14 @@ namespace Producao.Controllers
 
             for (int i = 0; i < materiasCheckbox.Count; i++)
             {
-                ProducaoMateriaPrima materia = _context.ProducoesMateriasPrimas.FirstOrDefault(p => p.MateriaPrimaId == materiasCheckbox[i].Id);
-                if (materiasPrimasDaProducao.Contains(materia))
+
+                foreach (var item in materiasPrimasDaProducao)
                 {
-                    materiasCheckbox[i].Selecionado = true;
-                    materiasCheckbox[i].Quantidade = materia.Quantidade;
+                    if (item.MateriaPrimaId == materiasCheckbox[i].Id)
+                    {
+                        materiasCheckbox[i].Selecionado = true;
+                        materiasCheckbox[i].Quantidade = item.Quantidade;
+                    }
                 }
             }
 
@@ -141,11 +145,13 @@ namespace Producao.Controllers
                 }
             }
 
+            Forma forma = _context.Formas.FirstOrDefault(f => f.Id == producaoVm.FormaId);
+
             var producao = new ProcessoProducao();
             producao.Data = producaoVm.Data;
             producao.MaquinaId = producaoVm.MaquinaId;
             producao.FormaId = producaoVm.FormaId;
-            producao.ProdutoId = producaoVm.ProdutoId;
+            producao.ProdutoId = forma.ProdutoId;
             producao.Ciclos = producaoVm.Ciclos;
             producao.ProducaoMateriasPrimas = new List<ProducaoMateriaPrima>();
 
@@ -180,18 +186,70 @@ namespace Producao.Controllers
         }
 
         [HttpPost]
-        public IActionResult Editar(ProcessoProducao producao)
+        public IActionResult Editar(ProducaoViewModel producaoVm)
         {
             try
             {
-                ProcessoProducao producaoDb = _context.Producoes.FirstOrDefault(m => m.Id == producao.Id);
+                ProcessoProducao producaoDb = _context.Producoes.Include(p => p.ProducaoMateriasPrimas).FirstOrDefault(m => m.Id == producaoVm.Producao.Id);
+                Forma forma = _context.Formas.FirstOrDefault(m => m.Id == producaoVm.FormaId);
+                var todasMateriasPrimas = _context.MateriasPrimas.ToList();
 
-                //produtoDb.Nome = produto.Nome;
-                //produtoDb.Medidas = produto.Medidas;
-                //produtoDb.Unidade = produto.Unidade;
-                //produtoDb.PecasPorUnidade = produto.PecasPorUnidade;
+                List<int> iDMateriasSelecionadas = new List<int>();
+                foreach (var item in producaoVm.MateriasPrimasCheckbox)
+                {
+                    if (item.Selecionado)
+                    {
+                        iDMateriasSelecionadas.Add(item.Id);
+                    }
+                }
 
-                //_context.Produtos.Update(producaoDb);
+                List<ProducaoMateriaPrima> producoesMateriasPrimas = producaoDb.ProducaoMateriasPrimas.ToList();
+
+                List<int> iDMateriasAntigas = new List<int>();
+                foreach (var item in producoesMateriasPrimas)
+                {
+                    iDMateriasAntigas.Add(item.MateriaPrimaId);
+                }
+
+                List<int> idMateriasNovas = new List<int>();
+                foreach (var id in iDMateriasSelecionadas)
+                {
+                    if (!iDMateriasAntigas.Contains(id))
+                    {
+                        idMateriasNovas.Add(id);
+                    }
+                }
+
+                List<ProducaoMateriaPrima> producoesnovas = new List<ProducaoMateriaPrima>();
+
+                for (int i = 0; i < idMateriasNovas.Count; i++)
+                {
+                    foreach (var item in producaoVm.MateriasPrimasCheckbox)
+                    {
+                        if (idMateriasNovas[i] == item.Id)
+                        {
+                            var novaProducaoMateria = new ProducaoMateriaPrima();
+                            novaProducaoMateria.ProducaoId = producaoDb.Id;
+                            novaProducaoMateria.MateriaPrimaId = idMateriasNovas[i];
+                            novaProducaoMateria.Quantidade = item.Quantidade;
+                            producaoDb.ProducaoMateriasPrimas.Add(novaProducaoMateria);
+                            producoesnovas.Add(novaProducaoMateria);
+                        }
+                    }
+                }
+
+                foreach (var item in producoesnovas)
+                {
+                    producaoDb.ProducaoMateriasPrimas.Add(item);
+                }
+
+                producaoDb.Data = producaoVm.Data;
+                producaoDb.MaquinaId = producaoVm.MaquinaId;
+                producaoDb.FormaId = producaoVm.FormaId;
+                producaoDb.ProdutoId = forma.ProdutoId;
+                producaoDb.Ciclos = producaoVm.Ciclos;
+                
+                _context.Producoes.Update(producaoDb);
                 _context.SaveChanges();
 
                 TempData["MensagemSucesso"] = "Produção alterada com sucesso";
@@ -213,12 +271,6 @@ namespace Producao.Controllers
                 .ThenInclude(p => p.MateriaPrima)
                 .FirstOrDefault(p => p.Id == producaoSelecionada.Id);
 
-            //var forma = _context.Formas.FirstOrDefault(f => f.Id == producaoSelecionada.Id);
-            //var produto = _context.Produtos.FirstOrDefault(p => p.Id == forma.ProdutoId);
-            //var producaoMateriasPrimas = _context.ProducoesMateriasPrimas.ToList();
-            //var materiasPrimas = _context.MateriasPrimas.ToList();
-
-            //producao.QuantidadeProduzida = (producao.Ciclos * forma.PecasPorCiclo)/produto.PecasPorUnidade;
             producao.QuantidadeProduzida = (producao.Ciclos * producao.Forma.PecasPorCiclo) / producao.Produto.PecasPorUnidade;
             producao.CustoTotal = 0;
 

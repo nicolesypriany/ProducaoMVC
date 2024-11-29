@@ -27,16 +27,16 @@
         </select>
     </div>
     <div>
-        <label for="forma">Forma</label>
+        <label for="forma">Forma e Produto</label>
         <select asp-for="FormaId" class="form-control">
             <option value="">Selecione uma forma</option>
             @foreach (var forma in Model.Formas)
             {
-                <option value="@forma.Id">@forma.Nome</option>
+                <option value="@forma.Id">@forma.Nome - (@forma.Produto.Nome)</option>
             }
         </select>
     </div>
-    <div>
+   @*  <div>
         <label for="Produto">Produto</label>
         <select asp-for="ProdutoId" class="form-control">
             <option value="">Selecione um produto</option>
@@ -45,7 +45,7 @@
                 <option value="@produto.Id">@produto.Nome</option>
             }
         </select>
-    </div>
+    </div> *@
     <div class="form-group">
         <label for="ciclos">Ciclos</label>
         <input type="number" asp-for="Ciclos" class="form-control" placeholder="Digite o número de ciclos">
